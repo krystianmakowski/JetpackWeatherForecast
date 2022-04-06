@@ -1,6 +1,6 @@
 package com.makowski.jetpackweatherforecast.navigation
 
-enum class WeatherScreens {
+enum class WeatherScreens{
     SplashScreen,
     AboutScreen,
     SettingScreen,

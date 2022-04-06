@@ -16,7 +16,7 @@ import com.makowski.jetpackweatherforecast.screens.settings.SettingsScreen
 import com.makowski.jetpackweatherforecast.screens.splash.WeatherSplashScreen
 
 @Composable
-fun WeatherNavigation() {
+fun WeatherNavigation(){
     val navController = rememberNavController()
     NavHost(navController = navController,
         startDestination = WeatherScreens.SplashScreen.name){

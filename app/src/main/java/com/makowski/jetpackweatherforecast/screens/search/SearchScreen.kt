@@ -39,7 +39,8 @@ fun SearchScreen(navController: NavController){
         }
     }) {
         Surface() {
-            Column(verticalArrangement = Arrangement.Center,
+            Column(
+                verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally) {
                 SearchBar(modifier = Modifier.fillMaxWidth()
                     .padding(16.dp)
@@ -68,7 +69,7 @@ fun SearchBar(
     Column() {
         CommonTextField(
             valueState = searchQueryState,
-            placeholder = "Miłosław",
+            placeholder = "Search City",
             onAction = KeyboardActions { //after filling in the field
                 if (!valid) return@KeyboardActions
                 onSearch(searchQueryState.value.trim())

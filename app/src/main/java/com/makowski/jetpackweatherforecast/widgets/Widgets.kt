@@ -27,7 +27,7 @@ import com.makowski.jetpackweatherforecast.utils.formatDecimals
 
 
 @Composable
-fun WeatherDetailRow(weather: WeatherItem) {
+fun WeatherDetailRow(weather: WeatherItem){
     val imageUrl = "https://openweathermap.org/img/wn/${weather.weather[0].icon}.png"
     Surface(modifier = Modifier
         .padding(3.dp)
@@ -59,7 +59,7 @@ fun WeatherDetailRow(weather: WeatherItem) {
 }
 
 @Composable
-fun SunsetSunriseRow(weather: WeatherItem) {
+fun SunsetSunriseRow(weather: WeatherItem){
     Row(
         modifier = Modifier
             .padding(top = 15.dp, bottom = 6.dp)
@@ -84,7 +84,7 @@ fun SunsetSunriseRow(weather: WeatherItem) {
 }
 
 @Composable
-fun HumidityWindPressureRow(weather: WeatherItem) {
+fun HumidityWindPressureRow(weather: WeatherItem, isMetric: Boolean){
     Row(
         modifier = Modifier
             .padding(12.dp)
@@ -107,7 +107,7 @@ fun HumidityWindPressureRow(weather: WeatherItem) {
         Row() {
             Icon(painter = painterResource(id = R.drawable.wind), contentDescription = "wind icon",
                 modifier = Modifier.size(20.dp) )
-            Text(text = "${weather.speed}kmh",
+            Text(text = "${formatDecimals(weather.speed)} " + if (isMetric) "m/s" else "mph",
                 style = MaterialTheme.typography.caption)
         }
 
@@ -115,7 +115,7 @@ fun HumidityWindPressureRow(weather: WeatherItem) {
 }
 
 @Composable
-fun WeatherStateImage(imageUrl: String) {
+fun WeatherStateImage(imageUrl: String){
     Image(painter = rememberImagePainter(imageUrl), contentDescription = "icon image",
         modifier = Modifier.size(80.dp))
 

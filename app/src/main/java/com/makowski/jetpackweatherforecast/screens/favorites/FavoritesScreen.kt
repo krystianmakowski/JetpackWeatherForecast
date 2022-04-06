@@ -50,7 +50,7 @@ fun FavoritesScreen(navController: NavController,favoriteViewModel: FavoriteView
 }
 
 @Composable
-fun CityRow(favorite: Favorite, navController: NavController, favoriteViewModel: FavoriteViewModel) {
+fun CityRow(favorite: Favorite, navController: NavController, favoriteViewModel: FavoriteViewModel){
     Surface(
         modifier = Modifier
             .padding(3.dp)

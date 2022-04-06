@@ -7,7 +7,7 @@ import retrofit2.http.Query
 import javax.inject.Singleton
 
 @Singleton
-interface WeatherApi {
+interface WeatherApi{
     @GET(value = "data/2.5/forecast/daily") //route
     suspend fun getWeather(
         @Query("q") query: String,

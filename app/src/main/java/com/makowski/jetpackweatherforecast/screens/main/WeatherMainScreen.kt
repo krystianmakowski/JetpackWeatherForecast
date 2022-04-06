@@ -6,8 +6,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.produceState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,6 +19,7 @@ import com.makowski.jetpackweatherforecast.data.DataOrException
 import com.makowski.jetpackweatherforecast.model.Weather
 import com.makowski.jetpackweatherforecast.model.WeatherItem
 import com.makowski.jetpackweatherforecast.navigation.WeatherScreens
+import com.makowski.jetpackweatherforecast.screens.settings.SettingsViewModel
 import com.makowski.jetpackweatherforecast.utils.formatDate
 import com.makowski.jetpackweatherforecast.utils.formatDecimals
 import com.makowski.jetpackweatherforecast.widgets.*
@@ -28,17 +28,37 @@ import com.makowski.jetpackweatherforecast.widgets.*
 fun WeatherMainScreen(
     navController: NavController,
     mainViewModel: MainViewModel = hiltViewModel(),
+    settingsViewModel: SettingsViewModel = hiltViewModel(),
     city: String?
 ){
-    val weatherData = produceState<DataOrException<Weather,Boolean,Exception>>(initialValue = DataOrException(loading = true)){
-        value = mainViewModel.getWeatherData(city = city.toString())
-    }.value
-    if (weatherData.loading == true) CircularProgressIndicator()
-    else if (weatherData.data != null) MainScaffold(weather = weatherData.data!!, navController)
+    val curCity: String = if (city!!.isBlank()) "Września" else city
+    val unitFromDb = settingsViewModel.unitList.collectAsState().value
+    var unit by remember {
+        mutableStateOf("metric")
+    }
+    var isMetric by remember {
+        mutableStateOf(false)
+    }
+     if (!unitFromDb.isNullOrEmpty()) {
+         unit = unitFromDb[0].unit.split(" ")[0].lowercase()
+         isMetric = unit == "metric"
+         val weatherData = produceState<DataOrException<Weather, Boolean, Exception>>(
+             initialValue = DataOrException(loading = true)){
+             value = mainViewModel.getWeatherData(city = curCity, units = unit)
+         }.value
+         if (weatherData.loading == true) {CircularProgressIndicator()}
+         else if (weatherData.data != null) {
+             MainScaffold(
+                 weather = weatherData.data!!,
+                 navController,
+                 isMetric = isMetric
+             )
+         }
+     }
 }
 
 @Composable
-fun MainScaffold(weather: Weather,navController: NavController) {
+fun MainScaffold(weather: Weather, navController: NavController, isMetric: Boolean){
     
     Scaffold(topBar = {
         WeatherAppBar(title = weather.city.name + ", ${weather.city.country}",
@@ -51,12 +71,12 @@ fun MainScaffold(weather: Weather,navController: NavController) {
         }
 
     }) {
-        MainContent(data = weather)
+        MainContent(data = weather, isMetric = isMetric)
         }
 }
 
 @Composable
-fun MainContent(data: Weather) {
+fun MainContent(data: Weather, isMetric: Boolean){
 
     val weatherItem = data.list[0]
     val imageUrl = "https://openweathermap.org/img/wn/${weatherItem.weather[0].icon}.png"
@@ -65,7 +85,7 @@ fun MainContent(data: Weather) {
         .padding(4.dp)
         .fillMaxWidth(),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally) {
+        horizontalAlignment = Alignment.CenterHorizontally){
         
         Text(
             text = formatDate(weatherItem.dt),
@@ -92,7 +112,7 @@ fun MainContent(data: Weather) {
             
         }
 
-        HumidityWindPressureRow(weather = weatherItem)
+        HumidityWindPressureRow(weather = weatherItem, isMetric = isMetric)
         Divider()
         SunsetSunriseRow(weather = weatherItem)
         Text(
@@ -104,7 +124,7 @@ fun MainContent(data: Weather) {
             .fillMaxWidth()
             .fillMaxHeight(),
             color = Color(0xFFEEF1EF),
-            shape = RoundedCornerShape(size = 14.dp)) {
+            shape = RoundedCornerShape(size = 14.dp)){
             LazyColumn(Modifier.padding(2.dp), contentPadding = PaddingValues(1.dp)){
                 items(items = data.list){item: WeatherItem ->
                     WeatherDetailRow(weather = item)

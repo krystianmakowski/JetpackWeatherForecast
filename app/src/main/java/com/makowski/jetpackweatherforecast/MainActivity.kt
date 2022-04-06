@@ -37,7 +37,7 @@ fun WeatherApp(){
             color = MaterialTheme.colors.background
         ) {
             Column(verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally) {
+                   horizontalAlignment = Alignment.CenterHorizontally) {
                 WeatherNavigation()
             }
 
