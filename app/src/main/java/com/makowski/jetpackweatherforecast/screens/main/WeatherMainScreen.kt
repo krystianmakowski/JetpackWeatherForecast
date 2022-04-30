@@ -31,7 +31,7 @@ fun WeatherMainScreen(
     settingsViewModel: SettingsViewModel = hiltViewModel(),
     city: String?
 ){
-    val curCity: String = if (city!!.isBlank()) "Września" else city
+    val curCity: String = if (city!!.isBlank()) "Poznan" else city
     val unitFromDb = settingsViewModel.unitList.collectAsState().value
     var unit by remember {
         mutableStateOf("metric")
@@ -54,6 +54,24 @@ fun WeatherMainScreen(
                  isMetric = isMetric
              )
          }
+     }else{
+
+         unit = "metric"
+         isMetric = unit == "metric"
+         val weatherData = produceState<DataOrException<Weather, Boolean, Exception>>(
+             initialValue = DataOrException(loading = true)){
+             value = mainViewModel.getWeatherData(city = curCity, units = unit)
+         }.value
+         if (weatherData.loading == true) {CircularProgressIndicator()}
+         else if (weatherData.data != null) {
+             MainScaffold(
+                 weather = weatherData.data!!,
+                 navController,
+                 isMetric = isMetric
+             )
+         }
+
+
      }
 }
 

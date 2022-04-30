@@ -10,7 +10,7 @@ interface WeatherDao{
     @Query("SELECT * from fav_table")
     fun getFavorites(): Flow<List<Favorite>>
 
-    @Query("SELECt * from fav_table where city =:city")
+    @Query("SELECT * from fav_table where city =:city")
     suspend fun getFavById(city: String): Favorite
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
