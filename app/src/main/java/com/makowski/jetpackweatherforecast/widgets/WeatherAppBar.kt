@@ -85,25 +85,39 @@ fun WeatherAppBar(
                 }
                 if (isAlreadyFavList.isNullOrEmpty()) {
                     Icon(
-                        imageVector = Icons.Default.Favorite,
+                        imageVector = Icons.Default.FavoriteBorder,
                         contentDescription = "Favorite Icon",
                         modifier = Modifier
                             .scale(0.9f)
                             .clickable {
-                                favoriteViewModel.insertFavorite(
-                                    Favorite(
-                                        city = dataList[0],
-                                        country = dataList[1]
+                                favoriteViewModel
+                                    .insertFavorite(
+                                        Favorite(
+                                            city = dataList[0],
+                                            country = dataList[1]
+                                        )
                                     )
-                                ).run { showIt.value = true }
+                                    .run { showIt.value = true }
                             },
                         tint = Color.Red.copy(alpha = 0.6f))
                 }else {
                     showIt.value = false
-                    Box{} }
+                    Box{
+                        Icon(
+                            imageVector = Icons.Default.Favorite,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .scale(0.9f)
+                                .clickable {
+                                    favoriteViewModel.deleteFavorite(
+                                        Favorite(
+                                         city = dataList[0],
+                                         country = dataList[1]
+                                    ))
+                                })
+                    } }
 
                 ShowToast(context = context, showIt)
-
             }
         },
         backgroundColor = Color.Transparent,
